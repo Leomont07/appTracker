@@ -1,39 +1,41 @@
 const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const supabase = require('../config/db');
-const router = express.Router();
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-
   try {
-    console.log('accediendo a bd: ' + process.env.SUPABASE_URL)
     const { data, error } = await supabase
       .from('users')
       .select('*')
       .eq('username', username)
       .single();
 
-    if (error || !data) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    if (error) {
+      return res.status(500).json({ message: error.message });
     }
 
-    const isValidPassword = await bcrypt.compare(password, data.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    const user = data;
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     const token = jwt.sign(
-      { id: data.id, username: data.username, role: data.role },
-      process.env.JWT_SECRET,
+      { id: user.id, type: user.type },
+      "missecreto123",
       { expiresIn: '1h' }
     );
 
-    res.json({ token, role: data.role });
-  } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.json({ token, type: user.type , username: user.username });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
+
+
 
 module.exports = router;
