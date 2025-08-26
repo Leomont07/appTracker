@@ -9,12 +9,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: 'http://localhost:4200',
+    origin: '*',
     methods: ['GET', 'POST']
   }
 });
 
-app.use(cors());
+app.use(cors({origin: '*'}));
 app.use(express.json());
 
 // Routes
