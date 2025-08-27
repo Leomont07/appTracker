@@ -22,11 +22,6 @@ const io = socketIo(server, {
 app.use(cors({origin: '*'}));
 app.use(express.json());
 
-// ✅ Health check para Fly.io
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK' });
-});
-
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/admin', require('./routes/admin'));
@@ -34,7 +29,6 @@ app.use('/api/delivery', require('./routes/delivery'));
 
 const connectedDeliveries = {};
 
-// ✅ Middleware para verificar conexiones Socket.io
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) {
