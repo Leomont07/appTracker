@@ -16,6 +16,14 @@ app = "delivery-backend-tunombre"
     handlers = ["tls", "http"]
     port = 443
 
+[[services]]
+  internal_port = 3000
+  protocol = "tcp"
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
   [[services.tcp_checks]]
     interval = 10000
     timeout = 2000
