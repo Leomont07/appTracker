@@ -8,15 +8,14 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Configuración CORREGIDA para Socket.io
 const io = socketIo(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
     credentials: true
   },
-  transports: ['websocket', 'polling'], // ✅ Agregar transports explícitos
-  allowEIO3: true // ✅ Compatibilidad con versiones anteriores
+  transports: ['websocket', 'polling'],
+  allowEIO3: true 
 });
 
 app.use(cors({origin: '*'}));
@@ -126,6 +125,6 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => { // ✅ Escuchar en 0.0.0.0
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
